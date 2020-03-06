@@ -3,7 +3,7 @@
   <div class="content">
     <p>Type your e-mail and password to Sign In!</p>
 
-    <form>
+    <form @submit.prevent="login">
       <label for="email">E-mail</label>
       <input 
         v-model="email" 
@@ -20,7 +20,7 @@
         placeholder="Digite a sua senha"
         >
 
-      <button type="submit">Sign In!</button>
+      <button type="submit">{{ status === 'loading' ? 'Loading...' : 'Sign In' }}</button>
     </form>
   </div>
 </div>
@@ -32,6 +32,26 @@ export default {
     return {
       email: '',
       password: ''
+    }
+  },
+  computed: {
+    status() {
+      return this.$store.getters.authStatus
+    }
+  },
+  methods: {
+    async login() {
+      let email = this.email
+      let password = this.password
+      try {
+        await this.$store.dispatch('login', { email, password })
+        this.$router.push('/')
+      } catch(e) {
+        if (e.response.status === 401)
+          this.$toasted.error('E-mail ou senha não cadastrados!')
+        else
+          this.$toasted.error('Ocorreu um erro inesperado!')
+      }
     }
   }
 }
