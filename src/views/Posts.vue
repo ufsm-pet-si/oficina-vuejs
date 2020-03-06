@@ -8,6 +8,7 @@
         <th>Text</th>
         <th>Image</th>
         <th>Publisher</th>
+        <th>Actions</th>
       </tr>
       <tr v-for="(post, index) in posts" :key="index">
         <td>{{ post.title }}</td>
@@ -16,6 +17,7 @@
           <img v-if="post.image" :src="post.image"/>
         </td>
         <td>{{ getUsername(post.user_id) }}</td>
+        <td><router-link v-if="post.user_id == loggedUser.id" :to="`/posts/${post.id}`">Access</router-link></td>
       </tr>
     </table>
   </div>
