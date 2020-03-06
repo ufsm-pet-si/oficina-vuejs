@@ -10,12 +10,14 @@ export default new Vuex.Store({
   state: {
     status: '',
     token: localStorage.getItem('token') || '',
-    user: JSON.parse(localStorage.getItem('user')) || {}
+    user: JSON.parse(localStorage.getItem('user')) || {},
+    users: JSON.parse(localStorage.getItem('posts')) || []
   },
   getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
-    loggedUser: state => state.user
+    loggedUser: state => state.user,
+    listOfUsers: state => state.users
   },
   mutations: {
     auth_request(state) {
@@ -33,6 +35,9 @@ export default new Vuex.Store({
       state.status = '',
       state.token = '',
       state.user = {}
+    },
+    set_users(state, users) {
+      state.users = users
     }
   },
   actions: {
@@ -63,6 +68,14 @@ export default new Vuex.Store({
       localStorage.removeItem('users')
       localStorage.removeItem('posts')
       delete axios.defaults.headers.common['token']
+    },
+    async fetchUsers({ commit }) {
+      const response = await axios.get(`${API_URL}/users`)
+      const users = response.data
+
+      localStorage.setItem('users', JSON.stringify(users))
+
+      commit('set_users', users)
     }
   },
   modules: {

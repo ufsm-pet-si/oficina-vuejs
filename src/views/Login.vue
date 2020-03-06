@@ -22,6 +22,7 @@
 
       <button type="submit">{{ status === 'loading' ? 'Loading...' : 'Sign In' }}</button>
     </form>
+    <p><router-link to="/users/create">Sign Up</router-link></p>
   </div>
 </div>
 </template>
