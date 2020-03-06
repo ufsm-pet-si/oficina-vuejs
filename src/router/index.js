@@ -37,6 +37,27 @@ const routes = [{
     requiresAuth: true
   }
 },{
+  path: '/posts',
+  name: 'Posts',
+  component: () => import('@/views/Posts.vue'),
+  meta: { 
+    requiresAuth: true
+  }
+},{
+  path: '/posts/create',
+  name: 'Create Post',
+  component: () => import('@/views/Post.vue'),
+  meta: { 
+    requiresAuth: true
+  }
+},{
+  path: '/posts/:postId',
+  name: 'Post',
+  component: () => import('@/views/Post.vue'),
+  meta: { 
+    requiresAuth: true
+  }
+},{
   path: '/login',
   name: 'Login',
   component: () => import('@/views/Login')

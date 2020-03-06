@@ -11,12 +11,14 @@ export default new Vuex.Store({
     status: '',
     token: localStorage.getItem('token') || '',
     user: JSON.parse(localStorage.getItem('user')) || {},
+    posts: JSON.parse(localStorage.getItem('posts')) || [],
     users: JSON.parse(localStorage.getItem('posts')) || []
   },
   getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     loggedUser: state => state.user,
+    listOfPosts: state => state.posts,
     listOfUsers: state => state.users
   },
   mutations: {
@@ -35,6 +37,9 @@ export default new Vuex.Store({
       state.status = '',
       state.token = '',
       state.user = {}
+    },
+    set_posts(state, posts) {
+      state.posts = posts
     },
     set_users(state, users) {
       state.users = users
@@ -68,6 +73,21 @@ export default new Vuex.Store({
       localStorage.removeItem('users')
       localStorage.removeItem('posts')
       delete axios.defaults.headers.common['token']
+    },
+    async fetchPosts({ commit }, ownerId = null) {
+      const response = await axios.get(`${API_URL}/posts${ownerId ? `?ownerId=${ownerId}` : ''}`)
+      const posts = response.data
+
+      localStorage.setItem('posts', JSON.stringify(posts))
+
+      posts.map(async post => {
+        if (post.image.path) {
+          const responseImg = await axios.get(`${API_URL}/images/${post.image.path}`)
+          post.image = responseImg.config.url
+        }
+      })
+      
+      commit('set_posts', posts)
     },
     async fetchUsers({ commit }) {
       const response = await axios.get(`${API_URL}/users`)
