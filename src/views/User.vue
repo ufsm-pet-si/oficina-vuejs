@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="content">
-      <p>{{ editing ? 'My Info' : user ? user.username : 'Register' }}</p>
+      <p>{{ editing ? 'My Info' : 'Register' }}</p>
   
-      <form v-if="editing" @submit.prevent="handleSubmit">
+      <form v-if="!editing" @submit.prevent="handleSubmit">
         <label for="username">Username</label>
         <input 
           v-model="user.username"
@@ -33,10 +33,8 @@
         <h3>E-mail: {{ user.username }}</h3>
       </div>
       
-      <p v-if="!user">
-        <router-link v-if="editing" to="/users/create">Sign Up</router-link>
-        <router-link v-else to="/login">Sign In</router-link>
-      </p>
+      <router-link v-if="!editing" to="/login">Sign In</router-link>
+      <router-link v-else to="/users/create">Sign In</router-link>
     </div>
   </div>
 </template>
@@ -101,8 +99,15 @@
       if (+this.$route.params.userId === this.loggedUser.id) {
         this.user = this.loggedUser
         this.editing = true
-      } else
+      } else {
         this.user = this.users.find(user => user.id === +this.$route.params.userId)
+        if (!this.user)
+          this.user = {
+            username: '',
+            password: '',
+            email: ''
+          }
+      }
     }
   }
 </script>
